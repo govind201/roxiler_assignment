@@ -1,18 +1,18 @@
 const express = require("express")
 const app = express();
 require('dotenv').config();
-const fetch = require('node-fetch');
-
+const fetchData = require('./fetch');
 
 app.get('/todos', async(req, res)=>{
-        let arrayData  = await fetch('https://jsonplaceholder.typicode.com/todos').then(res => res.json()).catch(err => console.error(err));
+        let arrayData  = await fetchData('https://jsonplaceholder.typicode.com/todos');
             let filteredData = arrayData.map(({id, title, completed}) => ({id, title, completed}));
             console.log(filteredData);
     res.json(filteredData);
 })
 app.get('/users/:id', async(req, res)=>{
         let id = req.params.id;
-        let arrayData  = await fetch(`https://jsonplaceholder.typicode.com/users/${id}`).then(res => res.json()).catch(err => console.error(err));
+        let url =  `https://jsonplaceholder.typicode.com/users/${id}`
+        let arrayData  = await fetchData(url);
         console.log(arrayData);
         res.json(arrayData);
 })
