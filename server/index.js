@@ -6,15 +6,23 @@ const fetchData = require('./fetch');
 app.get('/todos', async(req, res)=>{
         let arrayData  = await fetchData('https://jsonplaceholder.typicode.com/todos');
             let filteredData = arrayData.map(({id, title, completed}) => ({id, title, completed}));
-            console.log(filteredData);
     res.json(filteredData);
 })
 app.get('/users/:id', async(req, res)=>{
-        let id = req.params.id;
-        let url =  `https://jsonplaceholder.typicode.com/users/${id}`
-        let arrayData  = await fetchData(url);
-        console.log(arrayData);
-        res.json(arrayData);
+        let paramsId = req.params.id;
+        let url =  `https://jsonplaceholder.typicode.com/users/${paramsId}`
+        let objData = await fetchData(url);
+        let {id, name, email, phone}= objData;
+
+        let todosData = await fetchData("https://jsonplaceholder.typicode.com/todos");
+        let resultObject = {};
+        resultObject["id"] = id;
+        resultObject["name"] = name;
+        resultObject["email"] = email;
+        resultObject["phone"] = phone;
+        let filteredTodosData = todosData.filter((obj)=>(obj.userId == id));
+        resultObject["todos"] = filteredTodosData;
+        res.json(resultObject);
 })
 
 app.get('*', (_, res)=>{
